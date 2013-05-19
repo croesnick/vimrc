@@ -1,26 +1,10 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
-"       Amir Salihefendic
-"       http://amix.dk - amix@amix.dk
-"
-" Version: 
-"       5.0 - 29/05/12 15:43:36
-"
-" Blog_post: 
-"       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
-"
-" Awesome_version:
-"       Get this config, nice color schemes and lots of plugins!
-"
-"       Install the awesome version from:
-"
-"           https://github.com/amix/vimrc
-"
-" Syntax_highlighted:
-"       http://amix.dk/vim/vimrc.html
-"
-" Raw_version: 
-"       http://amix.dk/vim/vimrc.txt
+" This .vimrc is based on Amir Salihefendic's version 5.0 posted at
+" 	http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
+" 
+" However, I added a few commands to make life easier (especially for the
+" LaTeX loving people out there). Most of what I know about VIMScript comes
+" from Steve Losh's excellent book "Learn VIMScript the Hard Way".
 "
 " Sections:
 "    -> General
