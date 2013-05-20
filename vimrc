@@ -1,4 +1,7 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Maintainer:
+"	Carsten Rösnick (github: croesnick)
+"
 " This .vimrc is based on Amir Salihefendic's version 5.0 posted at
 " 	http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
 " 
@@ -6,28 +9,22 @@
 " LaTeX loving people out there). Most of what I know about VIMScript comes
 " from Steve Losh's excellent book "Learn VIMScript the Hard Way".
 "
-" Sections:
-"    -> General
-"    -> LaTeX
-"    -> VIM user interface
-"    -> Colors and Fonts
-"    -> Files and backups
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Moving around, tabs and buffers
-"    -> Status line
-"    -> Editing mappings
-"    -> vimgrep searching and cope displaying
-"    -> Spell checking
-"    -> Misc
-"    -> Helper functions
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Important:
+" 	Command to toggle folding is {normal} za
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Vimscript file settings ------------------------------------------------ {{{
+" ------------------------------------------------------------------------
+" Command to toggle folding is 'za' {normal}
+augroup filetype_vim
+	autocmd!
+	autocmd FileType vim setlocal foldmethod=marker
+	autocmd FileType vim setlocal foldlevelstart=0
+augroup END
+" }}} ------------------------------------------------------------------------
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General VIM settings --------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -57,16 +54,46 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>h 0
 " Go to the last (possibly blank) character of the line
 nnoremap <leader>l $
+" }}} ------------------------------------------------------------------------
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => LaTeX
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" LaTeX-related settings and mappings ------------------------------------ {{{
+" ------------------------------------------------------------------------ 
 let g:Tex_DefaultTargetFormat='pdf'
 
+augroup aucmdlatex
+	" Clear the group 
+	autocmd!
+	autocmd FileType tex setlocal number
+	
+	" Prepend LaTeX comments to visually selected lines
+	" TODO Find out how to make use of the range parameter in "function Name() range"
+	function! LaTeXCommentOut()
+		" Necessary; updates '< and '>
+		execute "normal! <cr>"
+		let vline = line("'<")
+		let vend  = line("'>")
+		while vline <= vend
+			" Go to line {vline}
+			execute ":".vline
+			" Switch to insert mode, add the comment, and switch back to normal mode
+			execute ":normal! gI%\<esc>"
+			let vline = vline + 1
+		endwhile
+	endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+	function! LaTeXCommentIn() range
+		execute a:firstline . ',' . a:lastline . 's/\v^\%//'
+	endfunction
+
+	" (C)omment (t)ext
+	vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
+	" (U)n(c)omment (t)ext
+	vnoremap <leader>uct :execute <c-u>'<,'>call LaTeXCommentIn()<cr>
+augroup END
+" }}}-------------------------------------------------------------------------
+
+" VIM user interface ----------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
@@ -124,9 +151,10 @@ if exists('+colorcolumn')
     highlight link OverLength ColorColumn
     exec 'match OverLength /\%'.&cc.'v.\+/'
 endif
-
+" }}} ------------------------------------------------------------------------
 
 " Vundle plugin manager: settings and bundles ---------------------------- {{{
+" ------------------------------------------------------------------------
 set nocompatible               " be iMproved
 filetype off                   " required!
 
@@ -187,16 +215,16 @@ set encoding=utf8
 set ffs=unix,dos,mac
 " }}} ------------------------------------------------------------------------
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Files, backups and undo ------------------------------------------------ {{{
+" ------------------------------------------------------------------------
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
 set nobackup
 set nowb
 set noswapfile
+" }}} ------------------------------------------------------------------------
 
-
-" Text, tab and indent related ------------------------------------------------------ {{{
+" Text, tab and indent related ------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Do NOT use spaces instead of tabs
 set noexpandtab
 
@@ -215,21 +243,18 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
-" --------------------------------------------------------------------}}}
+" }}} ------------------------------------------------------------------------
 
-
-""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
+" Visual mode related ---------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
+" }}} ------------------------------------------------------------------------
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Moving around, tabs, windows and buffers ------------------------------- {{{
+" ------------------------------------------------------------------------
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
@@ -280,21 +305,19 @@ autocmd BufReadPost *
      \ endif
 " Remember info about open buffers on close
 set viminfo^=%
+" }}} ------------------------------------------------------------------------
 
-
-""""""""""""""""""""""""""""""
-" => Status line
-""""""""""""""""""""""""""""""
+" Status line ------------------------------------------------------------ {{{
+" ------------------------------------------------------------------------
 " Always show the status line
 set laststatus=2
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
+" }}} ------------------------------------------------------------------------
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Editing mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Text editing ----------------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
@@ -311,6 +334,13 @@ if has("mac") || has("macunix")
   vmap <D-k> <M-k>
 endif
 
+" Put visually selected text in double quotes
+vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>" Visually mark trailing whitespaces
+
+" Mark trailing whitespaces in red
+highlight TrailingWhitespaces ctermbg=red guibg=red
+nnoremap <leader>tw :execute 'match TrailingWhitespaces /\v\s+$/'<cr>
+
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
   exe "normal mz"
@@ -319,11 +349,10 @@ func! DeleteTrailingWS()
 endfunc
 autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
+" }}} ------------------------------------------------------------------------
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimgrep searching and cope displaying
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vimgrep searching and cope displaying ---------------------------------- {{{
+" ------------------------------------------------------------------------
 " When you press gv you vimgrep after the selected text
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
@@ -351,11 +380,10 @@ map <leader>cc :botright cope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>n :cn<cr>
 map <leader>p :cp<cr>
+" }}} ------------------------------------------------------------------------
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Spell checking --------------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
@@ -364,11 +392,10 @@ map <leader>sn ]s
 map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
+" }}} ------------------------------------------------------------------------
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Misc
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Misc ------------------------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
@@ -377,12 +404,10 @@ map <leader>q :e ~/buffer<cr>
 
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
+" }}} ------------------------------------------------------------------------
 
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Helper functions ------------------------------------------------------- {{{
+" ------------------------------------------------------------------------
 function! CmdLine(str)
     exe "menu Foo.Bar :" . a:str
     emenu Foo.Bar
@@ -409,7 +434,6 @@ function! VisualSelection(direction) range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
-
 
 " Returns true if paste mode is enabled
 function! HasPaste()
@@ -439,59 +463,4 @@ function! <SID>BufcloseCloseIt()
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Useful custom commands
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup aucmdlatex
-	" Clear the group 
-	autocmd!
-	autocmd FileType tex setlocal number
-	
-	" Prepend LaTeX comments to visually selected lines
-	" TODO Find out how to make use of the range parameter in "function Name() range"
-	function! LaTeXCommentOut()
-		" Necessary; updates '< and '>
-		execute "normal! <cr>"
-		let vline = line("'<")
-		let vend  = line("'>")
-		while vline <= vend
-			" Go to line {vline}
-			execute ":".vline
-			" Switch to insert mode, add the comment, and switch back to normal mode
-			execute ":normal! gI%\<esc>"
-			let vline = vline + 1
-		endwhile
-	endfunction
-
-	function! LaTeXCommentIn() range
-		execute a:firstline . ',' . a:lastline . 's/\v^\%//'
-	endfunction
-
-	" (C)omment (t)ext
-	vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
-	" (U)n(c)omment (t)ext
-	vnoremap <leader>uct :execute <c-u>'<,'>call LaTeXCommentIn()<cr>
-augroup END
-
-augroup aucmdjs
-	autocmd!
-	autocmd FileType javascript nnoremap <buffer> <localleader>r I//<esc>
-augroup END
-
-" TODO Write a command for commenting a whole block of LaTeX code
-
-" Vimscript file settings ------------------------------------------------ {{{
-" Command to toggle folding is 'za' {normal}
-augroup filetype_vim
-	autocmd!
-	autocmd FileType vim setlocal foldmethod=marker
-	autocmd FileType vim setlocal foldlevelstart=0
-augroup END
 " }}} ------------------------------------------------------------------------
-
-" Put visually selected text in double quotes
-vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>" Visually mark trailing whitespaces
-highlight TrailingWhitespaces ctermbg=red guibg=red
-nnoremap <leader>tw :execute 'match TrailingWhitespaces /\v\s+$/'<cr>
-
