@@ -447,6 +447,31 @@ augroup aucmdlatex
 	" Clear the group 
 	autocmd!
 	autocmd FileType tex setlocal number
+	
+	" Prepend LaTeX comments to visually selected lines
+	" TODO Find out how to make use of the range parameter in "function Name() range"
+	function! LaTeXCommentOut()
+		" Necessary; updates '< and '>
+		execute "normal! <cr>"
+		let vline = line("'<")
+		let vend  = line("'>")
+		while vline <= vend
+			" Go to line {vline}
+			execute ":".vline
+			" Switch to insert mode, add the comment, and switch back to normal mode
+			execute ":normal! gI%\<esc>"
+			let vline = vline + 1
+		endwhile
+	endfunction
+
+	function! LaTeXCommentIn() range
+		execute a:firstline . ',' . a:lastline . 's/\v^\%//'
+	endfunction
+
+	" (C)omment (t)ext
+	vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
+	" (U)n(c)omment (t)ext
+	vnoremap <leader>uct :execute <c-u>'<,'>call LaTeXCommentIn()<cr>
 augroup END
 
 augroup aucmdjs
@@ -466,10 +491,7 @@ augroup END
 " }}} ------------------------------------------------------------------------
 
 " Put visually selected text in double quotes
-vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>
-
-" Visually mark trailing whitespaces
+vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>" Visually mark trailing whitespaces
 highlight TrailingWhitespaces ctermbg=red guibg=red
 nnoremap <leader>tw :execute 'match TrailingWhitespaces /\v\s+$/'<cr>
 
-" Visually grep ...
