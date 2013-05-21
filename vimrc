@@ -1,6 +1,8 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Maintainer:
 "	Carsten Rösnick (github: croesnick)
+" 
+" Version: 0.1
 "
 " This .vimrc is based on Amir Salihefendic's version 5.0 posted at
 " 	http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
