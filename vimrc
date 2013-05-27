@@ -68,7 +68,6 @@ augroup aucmdlatex
 	autocmd FileType tex setlocal number
 	
 	" Prepend LaTeX comments to visually selected lines
-	" TODO Find out how to make use of the range parameter in "function Name() range"
 	function! LaTeXCommentOut()
 		" Necessary; updates '< and '>
 		execute "normal! <cr>"
@@ -77,7 +76,8 @@ augroup aucmdlatex
 		while vline <= vend
 			" Go to line {vline}
 			execute ":".vline
-			" Switch to insert mode, add the comment, and switch back to normal mode
+			" Switch to insert mode, add the comment, and switch back to
+			" normal mode
 			execute ":normal! gI%\<esc>"
 			let vline = vline + 1
 		endwhile
@@ -88,9 +88,9 @@ augroup aucmdlatex
 	endfunction
 
 	" (C)omment (t)ext
-	vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
+	autocmd FileType tex vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
 	" (U)n(c)omment (t)ext
-	vnoremap <leader>uct :execute <c-u>'<,'>call LaTeXCommentIn()<cr>
+	autocmd FileType tex vnoremap <leader>uct :call LaTeXCommentIn()<cr>
 augroup END
 " }}}-------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
-"
+Bundle 'potion'
 " original repos on github
 Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
@@ -337,7 +337,7 @@ if has("mac") || has("macunix")
 endif
 
 " Put visually selected text in double quotes
-vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>" Visually mark trailing whitespaces
+vnoremap <leader>qt <esc>`<i"<esc>`>a"<esc>
 
 " Mark trailing whitespaces in red
 highlight TrailingWhitespaces ctermbg=red guibg=red
