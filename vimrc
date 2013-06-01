@@ -1,12 +1,12 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Maintainer:
 "	Carsten Rösnick (github: croesnick)
-" 
+"
 " Version: 0.1
 "
 " This .vimrc is based on Amir Salihefendic's version 5.0 posted at
 " 	http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
-" 
+"
 " However, I added a few commands to make life easier (especially for the
 " LaTeX loving people out there). Most of what I know about VIMScript comes
 " from Steve Losh's excellent book "Learn VIMScript the Hard Way".
@@ -48,7 +48,7 @@ let g:maplocalleader = ","
 nmap <leader>w :w!<cr>
 
 " Shorthand for "(e)dit (v)imrc in a split buffer"
-nnoremap <leader>ev :vsplit $MYVIMRC<cr> 
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 " "(S)ource the updated (v)imrc"; i.e., load its updates in the currently opened file
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
@@ -59,14 +59,14 @@ nnoremap <leader>l $
 " }}} ------------------------------------------------------------------------
 
 " LaTeX-related settings and mappings ------------------------------------ {{{
-" ------------------------------------------------------------------------ 
+" -----------------------------------------------------------------------
 let g:Tex_DefaultTargetFormat='pdf'
 
 augroup aucmdlatex
-	" Clear the group 
+	" Clear the group
 	autocmd!
 	autocmd FileType tex setlocal number
-	
+
 	" Prepend LaTeX comments to visually selected lines
 	function! LaTeXCommentOut()
 		" Necessary; updates '< and '>
@@ -121,7 +121,7 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -163,8 +163,7 @@ filetype off                   " required!
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" let Vundle manage Vundle
-" required! 
+" REQUIRED: let Vundle manage Vundle
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
@@ -180,7 +179,6 @@ Bundle 'FuzzyFinder'
 " non github repos
 Bundle 'Command-T'
 Bundle 'git://github.com/vim-scripts/peaksea.git'
-" ...
 
 filetype plugin indent on     " required!
 
@@ -189,9 +187,6 @@ filetype plugin indent on     " required!
 " :BundleInstall(!)    - install(update) bundles
 " :BundleSearch(!) foo - search(or refresh cache first) for foo
 " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-"
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
 " }}} ------------------------------------------------------------------------
 
 " Colors and Fonts ------------------------------------------------------- {{{
@@ -205,9 +200,9 @@ set background=light
 
 " Set extra options when running in GUI mode
 if has("gui_running")
-    set guioptions-=T
-    set guioptions+=e
-    set guitablabel=%M\ %t
+	set guioptions-=T
+	set guioptions+=e
+	set guitablabel=%M\ %t
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
@@ -293,18 +288,18 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
-  set switchbuf=useopen,usetab,newtab
-  set stal=2
+	set switchbuf=useopen,usetab,newtab
+	set stal=2
 catch
 endtry
 
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-     \   exe "normal! g`\"" |
-     \ endif
+			\ if line("'\"") > 0 && line("'\"") <= line("$") |
+			\   exe "normal! g`\"" |
+			\ endif
 " Remember info about open buffers on close
 set viminfo^=%
 " }}} ------------------------------------------------------------------------
@@ -330,10 +325,10 @@ vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 if has("mac") || has("macunix")
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
+	nmap <D-j> <M-j>
+	nmap <D-k> <M-k>
+	vmap <D-j> <M-j>
+	vmap <D-k> <M-k>
 endif
 
 " Put visually selected text in double quotes
@@ -345,9 +340,9 @@ nnoremap <leader>tw :execute 'match TrailingWhitespaces /\v\s+$/'<cr>
 
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
+	exe "normal mz"
+	%s/\s\+$//ge
+	exe "normal `z"
 endfunc
 autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
@@ -411,20 +406,20 @@ map <leader>pp :setlocal paste!<cr>
 " Helper functions ------------------------------------------------------- {{{
 " ------------------------------------------------------------------------
 function! CmdLine(str)
-    exe "menu Foo.Bar :" . a:str
-    emenu Foo.Bar
+	exe "menu Foo.Bar :" . a:str
+	emenu Foo.Bar
     unmenu Foo
 endfunction
 
 function! VisualSelection(direction) range
-    let l:saved_reg = @"
+	let l:saved_reg = @"
     execute "normal! vgvy"
 
     let l:pattern = escape(@", '\\/.*$^~[]')
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
     if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
+		execute "normal ?" . l:pattern . "^M"
     elseif a:direction == 'gv'
         call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
     elseif a:direction == 'replace'
@@ -448,21 +443,21 @@ endfunction
 " Don't close window, when deleting a buffer
 command! Bclose call <SID>BufcloseCloseIt()
 function! <SID>BufcloseCloseIt()
-   let l:currentBufNum = bufnr("%")
-   let l:alternateBufNum = bufnr("#")
+	let l:currentBufNum = bufnr("%")
+	let l:alternateBufNum = bufnr("#")
 
-   if buflisted(l:alternateBufNum)
-     buffer #
-   else
-     bnext
-   endif
+	if buflisted(l:alternateBufNum)
+		buffer #
+	else
+		bnext
+	endif
 
-   if bufnr("%") == l:currentBufNum
-     new
-   endif
+	if bufnr("%") == l:currentBufNum
+		new
+	endif
 
-   if buflisted(l:currentBufNum)
-     execute("bdelete! ".l:currentBufNum)
-   endif
+	if buflisted(l:currentBufNum)
+		execute("bdelete! ".l:currentBufNum)
+	endif
 endfunction
 " }}} ------------------------------------------------------------------------
