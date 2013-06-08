@@ -91,6 +91,20 @@ augroup aucmdlatex
 	autocmd FileType tex vnoremap <leader>ct :execute "<c-u>call LaTeXCommentOut()<cr>"
 	" (U)n(c)omment (t)ext
 	autocmd FileType tex vnoremap <leader>uct :call LaTeXCommentIn()<cr>
+	
+	" Little helper commands for inserting typical LaTeX stuff
+	" ========================================================
+	
+	" wraps the current word in a \begin{word} ... \end{word}
+	autocmd FileType tex nnoremap <leader>ee "ayiwdiwI\begin{<esc>"apa}<cr><cr>\end{<esc>"apa}<esc>ki
+
+	" Directly insert the most common environments
+	" enumerate and itemize
+	autocmd FileType tex nnoremap <leader>ie o\begin{enumerate}<cr>\item<space><cr>\end{enumerate}<esc>k$a
+	autocmd FileType tex nnoremap <leader>ii o\begin{itemize}<cr>\item<space><cr>\end{itemize}<esc>k$a
+	" theorem, lemma, ...
+	autocmd FileType tex nnoremap <leader>it o\begin{theorem}<space>\label{thm:}<cr><cr>\end{theorem}<esc>ki
+	autocmd FileType tex nnoremap <leader>il o\begin{lemma}<space>\label{lem:}<cr><cr>\end{lemma}<esc>ki
 augroup END
 " }}}-------------------------------------------------------------------------
 
