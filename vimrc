@@ -179,36 +179,32 @@ endif
 set nocompatible               " be iMproved
 filetype off                   " required!
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " REQUIRED: let Vundle manage Vundle
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
-" My Bundles here:
-Bundle 'potion'
 " original repos on github
-Bundle 'tpope/vim-fugitive'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-Bundle 'tpope/vim-rails.git'
+" Plugin 'tpope/vim-fugitive'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Plugin 'tpope/vim-rails.git'
 " vim-scripts repos
-Bundle 'L9'
-Bundle 'FuzzyFinder'
-" Bundle 'minibufexplorerpp'
-"" Full-automatic compilation of LaTeX documents from VIM using Rubber
-Bundle 'TeX-PDF'
-" Bundle 'AutomaticLaTexPlugin'
+Plugin 'L9'
+Plugin 'FuzzyFinder'
 "" Spellchecker that ignores LaTeX commands
-Bundle 'SpellChecker'
+Plugin 'SpellChecker'
 "" Color scheme tailor-made for LaTeX
-Bundle 'Neverness-colour-scheme'
+Plugin 'Neverness-colour-scheme'
 " non github repos
-Bundle 'Command-T'
-Bundle 'git://github.com/vim-scripts/peaksea.git'
-Bundle 'git://github.com/samdraz/slimv.git'
+Plugin 'Command-T'
+Plugin 'git://github.com/vim-scripts/peaksea.git'
+" Plugin 'git://github.com/samdraz/slimv.git'
 " YouCompleteMe auto-complete plugin
-"Bundle 'Valloric/YouCompleteMe'
+"Plugin 'Valloric/YouCompleteMe'
+
+call vundle#end()
 filetype plugin indent on     " required!
 
 " Brief help
