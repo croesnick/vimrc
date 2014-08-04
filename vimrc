@@ -56,6 +56,11 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>h 0
 " Go to the last (possibly blank) character of the line
 nnoremap <leader>l $
+
+" Shortcut for "go to older/last highlighted tag"
+nnoremap <leader>jb CTRL-T
+" Jump forward to the tag
+nnoremap <leader>jf CTRL-]
 " }}} ------------------------------------------------------------------------
 
 " LaTeX-related settings and mappings ------------------------------------ {{{
@@ -113,7 +118,7 @@ augroup END
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
-" Turn on the WiLd menu
+" Turn on the Wild menu
 set wildmenu
 
 " Ignore compiled files
@@ -190,10 +195,20 @@ Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'L9'
 Bundle 'FuzzyFinder'
+" Bundle 'minibufexplorerpp'
+"" Full-automatic compilation of LaTeX documents from VIM using Rubber
+Bundle 'TeX-PDF'
+" Bundle 'AutomaticLaTexPlugin'
+"" Spellchecker that ignores LaTeX commands
+Bundle 'SpellChecker'
+"" Color scheme tailor-made for LaTeX
+Bundle 'Neverness-colour-scheme'
 " non github repos
 Bundle 'Command-T'
 Bundle 'git://github.com/vim-scripts/peaksea.git'
-
+Bundle 'git://github.com/samdraz/slimv.git'
+" YouCompleteMe auto-complete plugin
+"Bundle 'Valloric/YouCompleteMe'
 filetype plugin indent on     " required!
 
 " Brief help
@@ -209,14 +224,15 @@ syntax enable
 " Enable 256 colors
 set t_Co=256
 
-colorscheme peaksea
-set background=light
+colorscheme neverness
+set background=dark
 
 " Set extra options when running in GUI mode
 if has("gui_running")
 	set guioptions-=T
 	set guioptions+=e
 	set guitablabel=%M\ %t
+"	set guifont=Monospace:h20
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
@@ -242,10 +258,10 @@ set noexpandtab
 " Be smart when using tabs ;)
 set smarttab
 
-" 1 tab == 4 spaces
-set shiftwidth=4
-" set softtabstop=4
-set tabstop=4
+" 1 tab == 3 spaces
+set shiftwidth=3
+" set softtabstop=3
+set tabstop=3
 
 " Linebreak on 500 characters
 set lbr
@@ -359,7 +375,10 @@ func! DeleteTrailingWS()
 	exe "normal `z"
 endfunc
 autocmd BufWrite *.py :call DeleteTrailingWS()
+autocmd BufWrite *.sh :call DeleteTrailingWS()
+autocmd BufWrite *.tex :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
+"autocmd BufWrite *.tex :call DeleteTrailingWS()
 " }}} ------------------------------------------------------------------------
 
 " vimgrep searching and cope displaying ---------------------------------- {{{
@@ -416,6 +435,11 @@ map <leader>q :e ~/buffer<cr>
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
 " }}} ------------------------------------------------------------------------
+
+" C/C++ Settings --------------------------------------------------------- {{{
+" ------------------------------------------------------------------------
+autocmd FileType cpp setlocal number expandtab shiftwidth=2 tabstop=2
+" }}}-------------------------------------------------------------------------
 
 " Helper functions ------------------------------------------------------- {{{
 " ------------------------------------------------------------------------
@@ -474,4 +498,14 @@ function! <SID>BufcloseCloseIt()
 		execute("bdelete! ".l:currentBufNum)
 	endif
 endfunction
+
+function! WC()
+	let filename = expand("%")
+	let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
+	let result = system(cmd)
+	echo result . " words"
+endfunction
+
+command WC call WC()
+
 " }}} ------------------------------------------------------------------------
